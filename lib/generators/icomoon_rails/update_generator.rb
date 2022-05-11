@@ -11,7 +11,7 @@ module IcomoonRails
 
       def initializer
         url = @args.first
-        @css_body = open(url).read
+        @css_body = URI.open(url).read
         @assets_path = "vendor/assets/stylesheets/icomoon_rails"
       end
 
@@ -24,7 +24,7 @@ module IcomoonRails
 
         files.each do |url|
           File.open("#{assets_path}/#{File.basename(url)}", "wb") do |fo|
-            fo.write open(url).read
+            fo.write URI.open(url).read
             puts "#{File.basename(url)} is updated"
           end
         end
