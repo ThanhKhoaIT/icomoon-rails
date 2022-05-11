@@ -7,23 +7,25 @@ module IcomoonRails
 
     class UpdateGenerator < ::Rails::Generators::Base
 
-      attr_reader :css_body, :assets_path
+      attr_reader :css_body, :css_path, :fonts_path
 
       def initializer
         url = @args.first
         @css_body = URI.open(url).read
-        @assets_path = "vendor/assets/stylesheets/icomoon_rails"
+        @css_path = 'app/assets/stylesheets/'
+        @fonts_path = 'app/assets/fonts/'
       end
 
       def create_dir
-        FileUtils.mkdir_p(assets_path) unless File.directory?(assets_path)
+        FileUtils.mkdir_p(css_path) unless File.directory?(css_path)
+        FileUtils.mkdir_p(fonts_path) unless File.directory?(fonts_path)
       end
 
       def download_font_files
         files = css_body.scan(/(https\:\/\/i.icomoon.io\/public\/temp\/.*)\?/).map(&:first)
 
         files.each do |url|
-          File.open("#{assets_path}/#{File.basename(url)}", "wb") do |fo|
+          File.open("#{fonts_path}/#{File.basename(url)}", "wb") do |fo|
             fo.write URI.open(url).read
             puts "#{File.basename(url)} is updated"
           end
@@ -31,19 +33,20 @@ module IcomoonRails
       end
 
       def download_style_files
+        cache_buster = ('a'..'z').to_a.shuffle.take(10).join
+        File.open("#{css_path}/icons.css", "wb") do |fo|
           fo.write <<~END
             @font-face {
               font-family: 'icomoon';
-              src: url('/assets/icomoon_rails/icomoon.eot?5mo2a0');
-              src: url('/assets/icomoon_rails/icomoon.eot?5mo2a0#iefix') format('embedded-opentype'),
-              url('/assets/icomoon_rails/icomoon.ttf?5mo2a0') format('truetype'),
-              url('/assets/icomoon_rails/icomoon.woff?5mo2a0') format('woff'),
-              url('/assets/icomoon_rails/icomoon.svg?5mo2a0#icomoon') format('svg');
+              src: url('/assets/icomoon.eot?#{cache_buster}');
+              src: url('/assets/icomoon.eot?#{cache_buster}#iefix') format('embedded-opentype'),
+              url('/assets/icomoon.ttf?#{cache_buster}') format('truetype'),
+              url('/assets/icomoon.woff?#{cache_buster}') format('woff'),
+              url('/assets/icomoon.svg?#{cache_buster}#icomoon') format('svg');
               font-weight: normal;
               font-style: normal;
             }
-          END        
-        File.open("#{assets_path}/icons.css", "wb") do |fo|
+          END
           fo.write css_body[css_body.index("}")+1..-1]
         end
         puts "Icons is updated"
