@@ -20,16 +20,6 @@ Or install it yourself as:
 
 ## Usage
 
-In your application.css, include the file:
-
-```
-/*
- *= require icomoon_rails
- */
-```
-
-### Create IcoMoon project
-
 Step 1. Go to https://icomoon.io
 
 Step 2. Click on **IcoMoon App**
@@ -48,6 +38,14 @@ Step 7. Run on terminal
 
 With example: ```bundle exec rails g icomoon_rails:update
 https://i.icomoon.io/public/temp/fc457ef804/UntitledProject/style.css```
+
+Step 8. Reference the stylesheet (put into `app/assets/icons.css`), e.g.
+
+``` css
+@import 'icons.css'
+```
+
+assuming the file, such as `application.css` is in the same directory.
 
 ### How to use icon in View
 
@@ -89,4 +87,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/ThanhK
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
